@@ -91,6 +91,7 @@
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label1);
             this.Name = "SaveToBatchForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SaveToBatchForm";
             this.ResumeLayout(false);
             this.PerformLayout();

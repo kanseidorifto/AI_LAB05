@@ -21,16 +21,23 @@ namespace AI_LAB05.Forms
             {
                 Bitmap bitmap = new Bitmap(X, Y);
                 var temp_arr = inputArrays[i].GetArray();
-                for (int j = 0; j < temp_arr.Length; j++)
+                if ((X * Y) == temp_arr.Length)
                 {
-                    if (temp_arr[j] == 1)
+                    for (int j = 0; j < temp_arr.Length; j++)
                     {
-                        bitmap.SetPixel((j % X), (int)Math.Floor((double)(j) / Y), Color.Black);
+                        if (temp_arr[j] == 1)
+                        {
+                            bitmap.SetPixel((j % X), (int)Math.Floor((double)(j) / Y), Color.Black);
+                        }
+                        else
+                        {
+                            bitmap.SetPixel((j % X), (int)Math.Floor((double)(j) / Y), Color.White);
+                        }
                     }
-                    else
-                    {
-                        bitmap.SetPixel((j % X), (int)Math.Floor((double)(j) / Y), Color.White);
-                    }
+                }
+                else
+                {
+                    bitmap = SystemIcons.Hand.ToBitmap();
                 }
                 myImageList.Images.Add(Program.ResizeImage(bitmap,64,64,InterpolationMode.NearestNeighbor));
                 listView1.Items.Add(new ListViewItem { ImageIndex = count, Text = inputArrays[i]._category_num.ToString() +" : " + inputArrays[i]._category_name });

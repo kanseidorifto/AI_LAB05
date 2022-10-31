@@ -56,6 +56,7 @@ namespace AI_LAB05.Forms
         {
             if (!_test_batch_flag)
             {
+                _classes.Clear();
                 for (int i = 0; i < input_signals_arr.Count; i++)
                     if (!_classes.Exists(x => x._category_num == input_signals_arr[i]._category_num))
                         _classes.Add(new Category(input_signals_arr[i]._category_num, input_signals_arr[i]._category_name));
@@ -117,8 +118,10 @@ namespace AI_LAB05.Forms
 
         private void навчатиToolStripMenuItem_Click(object sender, EventArgs e) // Навчання мережі
         {
+            toolStripStatusLabel1.Text = "Іде процес навчання";
             var starttime = System.DateTime.Now;
             int iter_count = 0;
+            this.Cursor.Tag = Cursors.AppStarting;
             if (test_signals_arr.Count > 0)
                 iter_count = _neuronNetwork.Learning(input_signals_arr.ToArray(), test_signals_arr.ToArray(), _settings._max_iter, _settings._precision, _settings._learning_rate);
             else
@@ -128,6 +131,7 @@ namespace AI_LAB05.Forms
             toolStripStatusLabel1.Text = "Кількість ітерацій = " + iter_count.ToString() + " | Час = " + deltatime;
             notifyIcon1.BalloonTipTitle = "NeuronNetwork";
             notifyIcon1.BalloonTipText = "Network has been trained!";
+            this.Cursor.Tag = Cursors.Default;
             notifyIcon1.ShowBalloonTip(1000);
         }
 
@@ -340,7 +344,7 @@ namespace AI_LAB05.Forms
 
         private void проПрограмуToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("NeuronNetwork\n\nVersion 0.87\n\n© Kozak 2022\n", "Про програму NeuronNetwork");
+            MessageBox.Show("NeuronNetwork\n\nVersion 0.94\n\n© Kozak 2022\n", "Про програму NeuronNetwork");
         }
 
         private void вихідToolStripMenuItem_Click(object sender, EventArgs e)
