@@ -7,7 +7,6 @@ namespace AI_LAB05.Forms
     public partial class MainForm : Form
     {
         private NeuronNetwork _neuronNetwork;
-        //private ArrayToStates<float> const_inputs;
         private List<InputArray> input_signals_arr;
         private List<InputArray> test_signals_arr;
         private Settings _settings = new Settings();
@@ -17,19 +16,20 @@ namespace AI_LAB05.Forms
         public MainForm()
         {
             InitializeComponent();
+
             paintControl1.SetSize();
-            var s = LoadSettings("configNN.json");
-            if (s != null)
+
+            var s = LoadSettings("configNN.json"); // Завантаження налаштувань з дефолтного файлу
+            if (s != null) 
             {
                 _settings = s;
                 paintControl1.SetPenWidth(_settings._pen_width);
             }
-            _neuronNetwork = new NeuronNetwork(_settings._dataX * _settings._dataY, _settings._layers_characteristic, _settings._outputclasses_count);
 
-            input_signals_arr = new List<InputArray>();
-            test_signals_arr = new List<InputArray>();
-            //input_signals_image_arr = new List<InputImage>();
-            //_dataBatch = new DataBatch(settings._dataX * settings._dataY);
+            _neuronNetwork = new NeuronNetwork(_settings._dataX * _settings._dataY, _settings._layers_characteristic, _settings._outputclasses_count); // Створення нейронної мережі
+
+            input_signals_arr = new List<InputArray>(); // Список для навчальної вибірки
+            test_signals_arr = new List<InputArray>(); //Список для тестової вибірки
 
         }
         #region settings
@@ -63,15 +63,14 @@ namespace AI_LAB05.Forms
                 Category promptValue = UserControl.Prompt.ShowDialog(_classes);
                 if (promptValue == null)
                     return;
-                //_dataBatch.AddSet(new InputImage(Program.ResizeImage(paintControl1.GetBitmap(), settings._dataX, settings._dataY), promptValue._category_num));
-                //
+                
                 //Program.ResizeImage(paintControl1.GetBitmap(), settings._dataX, settings._dataY).Save("_img" + input_signals_arr.Count.ToString() + ".png");
                 //paintControl1.GetBitmap().Save("_img" + input_signals_arr.Count.ToString() + "_origin.png");
                 input_signals_arr.Add(new InputArray(new InputImage(Program.ResizeImage(paintControl1.GetBitmap(), _settings._dataX, _settings._dataY), promptValue._category_num).GetArray(), promptValue._category_num, promptValue._category_name));
             }
             else
             {
-                for (int i = 0; i <test_signals_arr.Count; i++)
+                for (int i = 0; i < test_signals_arr.Count; i++)
                     if (!_test_classes.Exists(x => x._category_num == test_signals_arr[i]._category_num))
                         _test_classes.Add(new Category(test_signals_arr[i]._category_num, test_signals_arr[i]._category_name));
 
@@ -91,18 +90,29 @@ namespace AI_LAB05.Forms
         {
             InputArray input_signals = new InputArray(new InputImage(Program.ResizeImage(paintControl1.GetBitmap(), _settings._dataX, _settings._dataY), 1).GetArray(), 0, "");
             OutputSignals result = _neuronNetwork.GetAnswer(input_signals);
+            List<Result> listbox_results = new List<Result>();
             listBox1.Items.Clear();
             if (_classes == null || _classes.Count == 0)
                 for (int i = 0; i < result.GetArray().Count; i++)
                 {
-                    listBox1.Items.Add(i + " - " + ": " + String.Format("{0:P}", result.GetSignal(i)));
+                    listbox_results.Add(new Result(i, "", result.GetSignal(i)));
+                    listBox1.Items.Add(listbox_results[i].ToString());
                 }
             else
                 foreach (var item in _classes)
                 {
-                    listBox1.Items.Add(item._category_num + " - " + item._category_name + ": " + String.Format("{0:P}", result.GetSignal(item._category_num)));
+                    listbox_results.Add(new Result(item._category_num, item._category_name, result.GetSignal(item._category_num)));
+                    listBox1.Items.Add(listbox_results[item._category_num].ToString());
                 }
 
+            List<Result> q = listbox_results.OfType<Result>().OrderByDescending(x => x._result).ToList();
+
+            listBox1.Items.Clear();
+            foreach (var o in q)
+            {
+                listBox1.Items.Add(o.ToString());
+
+            }
         }
 
         private void навчатиToolStripMenuItem_Click(object sender, EventArgs e) // Навчання мережі
@@ -110,9 +120,9 @@ namespace AI_LAB05.Forms
             var starttime = System.DateTime.Now;
             int iter_count = 0;
             if (test_signals_arr.Count > 0)
-                iter_count = _neuronNetwork.Learning(input_signals_arr.ToArray(), test_signals_arr.ToArray(), _settings._max_iter, _settings._precision);
+                iter_count = _neuronNetwork.Learning(input_signals_arr.ToArray(), test_signals_arr.ToArray(), _settings._max_iter, _settings._precision, _settings._learning_rate);
             else
-                iter_count = _neuronNetwork.Learning(input_signals_arr.ToArray(), input_signals_arr.ToArray(), _settings._max_iter, _settings._precision);
+                iter_count = _neuronNetwork.Learning(input_signals_arr.ToArray(), input_signals_arr.ToArray(), _settings._max_iter, _settings._precision, _settings._learning_rate);
             notifyIcon1.Icon = SystemIcons.Information;
             var deltatime = System.DateTime.Now - starttime;
             toolStripStatusLabel1.Text = "Кількість ітерацій = " + iter_count.ToString() + " | Час = " + deltatime;
@@ -291,6 +301,7 @@ namespace AI_LAB05.Forms
             networkSettings.numericUpDown_max_iter.Value = _settings._max_iter;
             networkSettings.textBox_precision.Text = _settings._precision.ToString();
             networkSettings.textBox_pen_width.Text = _settings._pen_width.ToString();
+            networkSettings.textBox_learning_rate.Text = _settings._learning_rate.ToString();
 
             if (networkSettings.ShowDialog() == DialogResult.OK)
             {
@@ -304,7 +315,9 @@ namespace AI_LAB05.Forms
                  _layers_characteristic,
                  (int)networkSettings.numericUpDown_outputclasses.Value,
                  (int)networkSettings.numericUpDown_max_iter.Value,
-                 float.Parse(networkSettings.textBox_precision.Text),float.Parse(networkSettings.textBox_pen_width.Text));
+                 float.Parse(networkSettings.textBox_precision.Text),
+                 float.Parse(networkSettings.textBox_learning_rate.Text),
+                 float.Parse(networkSettings.textBox_pen_width.Text));
                 paintControl1.SetPenWidth(_settings._pen_width);
                 SaveSettings("configNN.json");
                 _neuronNetwork = new NeuronNetwork(_settings._dataX * _settings._dataY, _settings._layers_characteristic, _settings._outputclasses_count);

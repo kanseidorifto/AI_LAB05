@@ -45,6 +45,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox_pen_width = new System.Windows.Forms.TextBox();
+            this.textBox_learning_rate = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_dataX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_dataY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_layers_characteristic)).BeginInit();
@@ -204,7 +206,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(265, 362);
+            this.btnCancel.Location = new System.Drawing.Point(261, 377);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(94, 29);
             this.btnCancel.TabIndex = 12;
@@ -214,7 +216,7 @@
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(156, 362);
+            this.btnOk.Location = new System.Drawing.Point(152, 377);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(94, 29);
             this.btnOk.TabIndex = 13;
@@ -240,7 +242,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 309);
+            this.label6.Location = new System.Drawing.Point(13, 336);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(127, 20);
             this.label6.TabIndex = 16;
@@ -248,10 +250,26 @@
             // 
             // textBox_pen_width
             // 
-            this.textBox_pen_width.Location = new System.Drawing.Point(206, 306);
+            this.textBox_pen_width.Location = new System.Drawing.Point(206, 333);
             this.textBox_pen_width.Name = "textBox_pen_width";
             this.textBox_pen_width.Size = new System.Drawing.Size(150, 27);
             this.textBox_pen_width.TabIndex = 17;
+            // 
+            // textBox_learning_rate
+            // 
+            this.textBox_learning_rate.Location = new System.Drawing.Point(206, 300);
+            this.textBox_learning_rate.Name = "textBox_learning_rate";
+            this.textBox_learning_rate.Size = new System.Drawing.Size(150, 27);
+            this.textBox_learning_rate.TabIndex = 19;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(13, 303);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(151, 20);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "Швидкість навчання";
             // 
             // NetworkSettings
             // 
@@ -259,7 +277,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(371, 403);
+            this.ClientSize = new System.Drawing.Size(371, 418);
+            this.Controls.Add(this.textBox_learning_rate);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox_pen_width);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.textBox_precision);
@@ -313,5 +333,7 @@
         private Panel panel1;
         private Label label6;
         public TextBox textBox_pen_width;
+        public TextBox textBox_learning_rate;
+        private Label label7;
     }
 }

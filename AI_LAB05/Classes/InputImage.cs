@@ -20,15 +20,7 @@ namespace AI_LAB05.Classes
             {
                 signals_vector[index] = b;
                 index++;
-                //var file = File.OpenWrite("array.txt");
-
             }
-            string str = "";
-            foreach (var item in b_map)
-            {
-                str +=item.ToString()+",";
-            }
-            File.WriteAllText("array.txt", str);
             return signals_vector;
         }
         public int GetCorrectAnswer()
@@ -39,7 +31,6 @@ namespace AI_LAB05.Classes
         public float GetSignal(int index)
         {
             var temp = _image.GetPixel(((index + 1) % _image.Width) - 1, (int)Math.Floor((double)(index - 1) / _image.Height));
-            //var temp = b.GetPixel(x, y);
             if (temp.R < 50)
             {
                 return 0;
@@ -48,7 +39,6 @@ namespace AI_LAB05.Classes
             {
                 return 1;
             }
-            //return _signals_vector[index];
         }
         public static float[,] GetBoolBitmap(Bitmap _bitmap)
         {

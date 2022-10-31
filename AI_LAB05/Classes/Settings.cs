@@ -17,6 +17,8 @@ namespace AI_LAB05.Classes
         [JsonInclude]
         public float _precision;
         [JsonInclude]
+        public float _learning_rate;
+        [JsonInclude]
         public float _pen_width;
         public Settings()
         {
@@ -26,9 +28,10 @@ namespace AI_LAB05.Classes
             _outputclasses_count = 10;
             _max_iter = 1000;
             _precision = 0.001f;
+            _learning_rate = 0.1f;
             _pen_width = 30f;
         }
-        public Settings(int dataX, int dataY, int[] layers_characteristic, int outputclasses_count, int max_iter, float precision, float pen_width)
+        public Settings(int dataX, int dataY, int[] layers_characteristic, int outputclasses_count, int max_iter, float precision,float learning_rate, float pen_width)
         {
             _dataX = dataX;
             _dataY = dataY;
@@ -36,6 +39,7 @@ namespace AI_LAB05.Classes
             _outputclasses_count = outputclasses_count;
             _max_iter = max_iter;
             _precision = precision;
+            _learning_rate = learning_rate;
             _pen_width = pen_width;
         }
     }

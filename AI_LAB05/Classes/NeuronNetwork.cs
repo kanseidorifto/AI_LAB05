@@ -7,14 +7,13 @@ namespace AI_LAB05.Classes
     {
         [JsonInclude]
         public List<NeuronLayer> _neuronLayerList;
-        [JsonInclude]
-        public readonly float learning_rate = 0.1f;
+        /*[JsonInclude]
+        public readonly float learning_rate = 0.1f;*/
         [JsonInclude]
         public int _outputclasses_count;
         public NeuronNetwork()
         {
             _neuronLayerList = new List<NeuronLayer>();
-            learning_rate = 1;
             _outputclasses_count = 0;
         }
         //Example new NeuronNetwork(128, new int[]{64,32}, 10); 16x16 image to classify numbers 0..9; 2 hidden layers with 64 and 32 neurons
@@ -52,11 +51,6 @@ namespace AI_LAB05.Classes
         }
         public OutputSignals GetAnswer(IInputSignals inputSignals)
         {
-            /*OutputSignals results = _neuronLayerList[0].GetAnswer(inputSignals);
-            for (int i = 1; i < _neuronLayerList.Count; i++)
-            {
-                results = _neuronLayerList[i].GetAnswer(results);
-            }*/
             List<ISignals> l_layers_results = new List<ISignals>();
 
             // Прямий прохід
@@ -67,31 +61,10 @@ namespace AI_LAB05.Classes
             }
             return (OutputSignals)l_layers_results[_neuronLayerList.Count - 1];
         }
-        public int Learning(IInputSignals[] inputSignals_batch, IInputSignals[] testSignals_batch, int max_iter, float precision)
+        public int Learning(IInputSignals[] inputSignals_batch, IInputSignals[] testSignals_batch, int max_iter, float precision, float learning_rate)
         {
+            float[] desire_result_vector = new float[_neuronLayerList[_neuronLayerList.Count - 1].GetNeyronsCount()];
 
-            /*float[,] l_right_result_arr = new float[inputSignals_batch.Length, _neuronLayerList[_neuronLayerList.Count - 1].GetNeyronsCount()];
-            for (int j = 0; j < inputSignals_batch.Length; j++)
-            {
-                for (int i = 0; i < _neuronLayerList[_neuronLayerList.Count - 1].GetNeyronsCount(); i++) //Розрахування вектора правильних відповідей персептрона на даний набір даних
-                {
-                    if ((j == i))
-                        l_right_result_arr[j, i] = 1f;
-                    else
-                        l_right_result_arr[j, i] = 0f;
-                }
-            }*/
-            //
-                float[] desire_result_vector = new float[_neuronLayerList[_neuronLayerList.Count - 1].GetNeyronsCount()];
-            /*
-            float[] GetDesireVectorId(int index)
-            {
-                float[] desire_result_vector = new float[_neuronLayerList[_neuronLayerList.Count - 1].GetNeyronsCount()];
-                desire_result_vector[index] = 1f;
-                return desire_result_vector;
-            }
-            */
-            //
             float avg_err = 1;
             int epoch = 0;
             while (avg_err > precision && epoch < max_iter)
@@ -99,17 +72,13 @@ namespace AI_LAB05.Classes
                 epoch++;
                 for (int q = 0; q < inputSignals_batch.Length; q++)
                 {
-                    //inputSignals[q].GetArray(); //Вектор вхідних сигналів
-                    //l_right_result_arr[q,]; //Вектор бажаних відповідей
                     List<ISignals> l_layers_results = new List<ISignals>();
                     var inputSignals_d = inputSignals_batch[q].GetCorrectAnswer();
 
                     /*if(inputSignals_d == 1) //Для виключного або
                     desire_result_vector[0] = 1;*/
 
-                    
                     desire_result_vector[inputSignals_d] = 1;
-                    
 
                     // Прямий прохід
                     l_layers_results.Add(inputSignals_batch[q]);
@@ -155,9 +124,8 @@ namespace AI_LAB05.Classes
                         desire_result_vector[0] = 0;
                     }*/
 
-                    
                     desire_result_vector[inputSignals_d] = 0;
-                    
+
                 }
                 float eps_sum = 0;
                 float max_err = 0;
@@ -182,7 +150,7 @@ namespace AI_LAB05.Classes
                         desire_result_vector[0] = 0;
                     }*/
                     desire_result_vector[testSignals_d] = 0;
-                    
+
                 }
                 avg_err = eps_sum / (testSignals_batch.Length * _outputclasses_count);
             }
